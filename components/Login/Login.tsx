@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { IAuth } from '../../interfaces/IAuth';
 import { objectToURLString } from '../../utils/forms';
+import Constants from 'expo-constants';
+
 
 export interface ILoginProps {
   setAuth: (auth: IAuth) => void;
@@ -26,7 +28,7 @@ export default function Login(props: ILoginProps) {
     e.stopPropagation();
     if (!username || !password) return;
     setLoading(true);
-    fetch(`${process.env['REACT_NATIVE_AUTH_URL']}/auth/login`, {
+    fetch(`${Constants.manifest?.extra?.auth}/login`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -37,7 +39,7 @@ export default function Login(props: ILoginProps) {
     })
       .then((response: Response) => response.ok ? response.json() : null)
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         props.setAuth(data)
       })
       .catch((error) => console.error(error))

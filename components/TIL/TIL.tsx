@@ -5,6 +5,8 @@ import {
     TextInputSubmitEditingEventData,
     StyleSheet
 } from "react-native";
+import Constants from 'expo-constants';
+
 
 export default function TIL() {
 
@@ -18,7 +20,7 @@ export default function TIL() {
     const onSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
         e.stopPropagation();
         if (!text) return;
-        fetch(`${process.env['REACT_NATIVE_API_URL']}/tils`, {
+        fetch(`${Constants.manifest?.extra?.api}/tils`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +31,7 @@ export default function TIL() {
         })
             .then((response: Response) => response.ok ? response.json() : null)
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 setText('');
                 input?.focus();
             })

@@ -17,6 +17,8 @@ import {
 import Login from './components/Login/Login';
 import TIL from './components/TIL/TIL';
 import { IAuth } from './interfaces/IAuth';
+import Constants from 'expo-constants';
+
 
 export default function App() {
 
@@ -25,7 +27,7 @@ export default function App() {
   const [showSignOut, setShowSignOut] = useState(false);
 
   const checkAuth = () => {
-    fetch(`${process.env['REACT_NATIVE_AUTH_URL']}/auth/`, {
+    fetch(`${Constants.manifest?.extra?.auth}/`, {
       method: "GET",
       headers: {
         'Accept': 'application/json'
@@ -34,7 +36,7 @@ export default function App() {
     })
       .then((response: Response) => response.ok ? response.json() : null)
       .then((data) => {
-        console.log(data)
+        // console.log(data)
         setAuth(data)
       })
       .catch((error) => console.error(error))
@@ -56,7 +58,7 @@ export default function App() {
 
   const onSignOut = (e: NativeSyntheticEvent<NativeTouchEvent>) => {
     e.preventDefault();
-    fetch(`${process.env['REACT_NATIVE_AUTH_URL']}/auth/logout`, {
+    fetch(`${Constants.manifest?.extra?.auth}/logout`, {
       method: "GET",
       headers: {
         'Accept': 'application/json'
@@ -75,7 +77,6 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}>
@@ -128,6 +129,11 @@ export default function App() {
             </>
           }
         </View>
+        <View style={styles.underlay}>
+          <Text style={styles.underlayText}>
+            {Constants.manifest?.version} - [{Constants.manifest?.extra?.environment}]
+          </Text>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -135,7 +141,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    position: 'relative'
   },
   inner: {
     paddingVertical: Platform.OS === "ios" ? 2 : 8,
@@ -143,6 +150,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-around",
     alignItems: 'center'
+  },
+  underlay: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    zIndex: -100,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: 12
+  },
+  underlayText: {
+    opacity: 0.5,
   },
   mainView: {
     position: 'relative',
@@ -160,14 +180,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start'
-    // justifyContent: 'space-between'
   },
   menuButtonRow: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between'
-    // alignItems: 'center'
   },
   menuButton: {
     display: 'flex',
