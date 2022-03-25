@@ -90,6 +90,7 @@ export default function App() {
               {auth && 
               <View style={styles.mainView}>
                 <TIL />
+                {/* TODO: Refactor into a MenuOverlayComponent */}
                 <View style={styles.menuOverlay}>
                   <View style={styles.menuButtonRow}>
                     <Button title='Menu'

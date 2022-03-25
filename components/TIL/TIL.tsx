@@ -3,7 +3,8 @@ import {
     TextInput,
     NativeSyntheticEvent,
     TextInputSubmitEditingEventData,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator
 } from "react-native";
 import Constants from 'expo-constants';
 
@@ -12,6 +13,7 @@ export default function TIL() {
 
     const [input, setInput] = useState<TextInput | null>();
     const [text, setText] = useState('');
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         input?.focus();
@@ -20,6 +22,7 @@ export default function TIL() {
     const onSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
         e.stopPropagation();
         if (!text) return;
+        setSaving(true);
         fetch(`${Constants.manifest?.extra?.api}/tils`, {
             method: "POST",
             headers: {
@@ -33,13 +36,17 @@ export default function TIL() {
             .then((data) => {
                 // console.log(data)
                 setText('');
-                input?.focus();
             })
             .catch((error) => console.error(error))
-            .finally(() => { });
+            .finally(() => {
+                setSaving(false);
+                input?.focus();
+            });
     }
 
     return (
+        saving ?
+        <ActivityIndicator size="large" /> :
         <TextInput
             ref={el => setInput(el)}
             style={styles.input}
